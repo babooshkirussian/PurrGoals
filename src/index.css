@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    --font-pixel: 'Press Start 2P', monospace;
+    --font-retro: 'VT323', monospace;
+  }
+
+  body {
+    font-family: var(--font-retro);
+    letter-spacing: 0.5px;
+    font-size: 1.15rem;
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: unset;
+  }
+
+  h1, h2, h3, h4, .font-pixel {
+    font-family: var(--font-pixel);
+    letter-spacing: -0.5px;
+  }
+
+  /* Pixel rendering crispness */
+  .pixelated {
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Retro Chunky Shadows & 3D Press Effects */
+.retro-box {
+  border: 3px solid #292524;
+  box-shadow: 4px 4px 0px #292524;
+}
+
+.dark .retro-box {
+  border: 3px solid #1c1917;
+  box-shadow: 4px 4px 0px #09090b;
+}
+
+.retro-box-sm {
+  border: 2px solid #292524;
+  box-shadow: 2px 2px 0px #292524;
+}
+
+.dark .retro-box-sm {
+  border: 2px solid #1c1917;
+  box-shadow: 2px 2px 0px #09090b;
+}
+
+.retro-btn {
+  border: 3px solid #292524;
+  box-shadow: 3px 3px 0px #292524;
+  transition: all 0.05s ease-in-out;
+  cursor: pointer;
+  user-select: none;
+}
+
+.retro-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #292524;
+}
+
+.retro-btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0px 0px 0px #292524;
+}
+
+.dark .retro-btn {
+  border: 3px solid #1c1917;
+  box-shadow: 3px 3px 0px #09090b;
+}
+
+.dark .retro-btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0px 0px 0px #09090b;
+}
+
+/* Custom retro scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #f5ebe0;
+  border-left: 2px solid #292524;
+}
+.dark ::-webkit-scrollbar-track {
+  background: #27272a;
+  border-left: 2px solid #09090b;
+}
+::-webkit-scrollbar-thumb {
+  background: #d97706;
+  border: 2px solid #292524;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #f59e0b;
+  border: 2px solid #09090b;
+}
