@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">PurrGoals</string>
+    <string name="title_activity_main">PurrGoals</string>
+    <string name="package_name">com.purrgoals.app</string>
+    <string name="custom_url_scheme">com.purrgoals.app</string>
+</resources>

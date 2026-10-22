@@ -1,0 +1,8 @@
+{
+  "appId": "com.purrgoals.app",
+  "appName": "PurrGoals",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}
