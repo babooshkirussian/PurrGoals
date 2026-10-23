@@ -3,6 +3,7 @@ import { Task, Subtask } from '../types/index';
 import { DEFAULT_CATEGORIES } from './TaskFormModal';
 import { checkIsOverdue } from '../utils/taskRules';
 import { playClickSound } from '../utils/audio';
+import { hapticTaskComplete, hapticButtonTap } from '../utils/haptics';
 
 interface TaskItemProps {
   task: Task;
@@ -17,6 +18,7 @@ interface TaskItemProps {
   isFirst?: boolean;
   isLast?: boolean;
   soundEnabled: boolean;
+  hapticsEnabled?: boolean;
 }
 
 export const TaskItem: React.FC<TaskItemProps> = ({
@@ -32,6 +34,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
   isFirst,
   isLast,
   soundEnabled,
+  hapticsEnabled = true,
 }) => {
   const [showSubtasks, setShowSubtasks] = useState(false);
   const [showFloatingBonus, setShowFloatingBonus] = useState(false);
@@ -47,8 +50,12 @@ export const TaskItem: React.FC<TaskItemProps> = ({
 
   const handleCheckboxClick = () => {
     if (!isDone) {
+      // Celebratory haptic pulse matching coin chime
+      hapticTaskComplete(hapticsEnabled);
       setShowFloatingBonus(true);
       setTimeout(() => setShowFloatingBonus(false), 1400);
+    } else {
+      hapticButtonTap(hapticsEnabled);
     }
     onToggleComplete(task);
   };
@@ -173,6 +180,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                 type="button"
                 onClick={() => {
                   playClickSound(soundEnabled);
+                  hapticButtonTap(hapticsEnabled);
                   setShowSubtasks(!showSubtasks);
                 }}
                 className="flex items-center gap-1 font-pixel text-[9px] text-amber-600 dark:text-amber-400 hover:underline"
@@ -189,7 +197,11 @@ export const TaskItem: React.FC<TaskItemProps> = ({
             {task.hasTimer && !isDone && (
               <button
                 type="button"
-                onClick={() => onOpenTimer(task)}
+                onClick={() => {
+                  playClickSound(soundEnabled);
+                  hapticButtonTap(hapticsEnabled);
+                  onOpenTimer(task);
+                }}
                 className="retro-btn px-2 py-0.5 bg-amber-200 dark:bg-amber-950 font-pixel text-[8px] text-amber-900 dark:text-amber-200"
               >
                 ⏱️ Focus ({task.timerDuration || 25}m)
@@ -208,7 +220,10 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                   <input
                     type="checkbox"
                     checked={sub.completed}
-                    onChange={() => onToggleSubtask(task.id, sub.id)}
+                    onChange={() => {
+                      hapticButtonTap(hapticsEnabled);
+                      onToggleSubtask(task.id, sub.id);
+                    }}
                     className="w-3.5 h-3.5 accent-emerald-500 rounded-none cursor-pointer"
                   />
                   <span className={sub.completed ? 'line-through text-stone-400' : ''}>
@@ -225,7 +240,11 @@ export const TaskItem: React.FC<TaskItemProps> = ({
           <div className="flex items-center gap-1">
             {!isDone && !isSkipped && (
               <button
-                onClick={() => onOpenSkip(task)}
+                onClick={() => {
+                  playClickSound(soundEnabled);
+                  hapticButtonTap(hapticsEnabled);
+                  onOpenSkip(task);
+                }}
                 aria-label={`Skip ${task.title}`}
                 className="retro-btn p-1 bg-amber-100 dark:bg-stone-700 hover:bg-amber-200 text-stone-700 dark:text-stone-300 font-pixel text-[9px]"
                 title="Skip today"
@@ -234,7 +253,11 @@ export const TaskItem: React.FC<TaskItemProps> = ({
               </button>
             )}
             <button
-              onClick={() => onOpenEdit(task)}
+              onClick={() => {
+                playClickSound(soundEnabled);
+                hapticButtonTap(hapticsEnabled);
+                onOpenEdit(task);
+              }}
               aria-label={`Edit ${task.title}`}
               className="retro-btn p-1 bg-stone-100 dark:bg-stone-700 hover:bg-stone-200 text-stone-700 dark:text-stone-300 font-pixel text-[9px]"
               title="Edit"
@@ -242,7 +265,11 @@ export const TaskItem: React.FC<TaskItemProps> = ({
               ✏️
             </button>
             <button
-              onClick={() => onDeleteTask(task.id)}
+              onClick={() => {
+                playClickSound(soundEnabled);
+                hapticButtonTap(hapticsEnabled);
+                onDeleteTask(task.id);
+              }}
               aria-label={`Delete ${task.title}`}
               className="retro-btn p-1 bg-rose-100 dark:bg-rose-950 hover:bg-rose-200 text-rose-700 dark:text-rose-300 font-pixel text-[9px]"
               title="Delete"

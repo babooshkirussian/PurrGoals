@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { NotificationSettings } from '../types/index';
 import { playClickSound, playCatMeow } from '../utils/audio';
+import { hapticButtonTap } from '../utils/haptics';
 
 interface NotificationsModalProps {
   settings: NotificationSettings;
@@ -11,6 +12,7 @@ interface NotificationsModalProps {
   onRequestPermission: () => Promise<boolean>;
   permissionState: NotificationPermission | 'default';
   soundEnabled: boolean;
+  hapticsEnabled?: boolean;
   onOpenInstall?: () => void;
 }
 
@@ -23,6 +25,7 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
   onRequestPermission,
   permissionState,
   soundEnabled,
+  hapticsEnabled = true,
   onOpenInstall,
 }) => {
   const [localSettings, setLocalSettings] = useState<NotificationSettings>(settings);
@@ -43,12 +46,14 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
 
   const handleSave = () => {
     playClickSound(soundEnabled);
+    hapticButtonTap(localSettings.hapticsEnabled ?? hapticsEnabled);
     onUpdateSettings(localSettings);
     onClose();
   };
 
   const handleTest = () => {
     playCatMeow(soundEnabled);
+    hapticButtonTap(localSettings.hapticsEnabled ?? hapticsEnabled);
     onTriggerTestNotification();
     setStatusMessage(`Test notification sent in ${catName}'s voice! Check your system notifications or app banner.`);
   };
@@ -65,7 +70,11 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
             </h2>
           </div>
           <button
-            onClick={onClose}
+            onClick={() => {
+              playClickSound(soundEnabled);
+              hapticButtonTap(localSettings.hapticsEnabled ?? hapticsEnabled);
+              onClose();
+            }}
             aria-label="Close"
             className="retro-btn px-2 py-0.5 bg-rose-500 text-white font-pixel text-xs"
           >
@@ -220,9 +229,29 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
               <input
                 type="checkbox"
                 checked={localSettings.eveningCheckin}
-                onChange={(e) =>
-                  setLocalSettings({ ...localSettings, eveningCheckin: e.target.checked })
-                }
+                onChange={(e) => {
+                  hapticButtonTap(localSettings.hapticsEnabled ?? hapticsEnabled);
+                  setLocalSettings({ ...localSettings, eveningCheckin: e.target.checked });
+                }}
+                className="w-4 h-4 accent-amber-500"
+              />
+            </label>
+
+            {/* Tactile Haptic Vibration Toggle */}
+            <label className="flex items-center justify-between text-xs cursor-pointer pt-1 border-t border-stone-200 dark:border-stone-700">
+              <div>
+                <span className="block font-medium">Tactile Haptics & Vibration</span>
+                <span className="text-[10px] text-stone-500">
+                  Vibrate on pet, feed, finish goals & taps
+                </span>
+              </div>
+              <input
+                type="checkbox"
+                checked={localSettings.hapticsEnabled ?? true}
+                onChange={(e) => {
+                  hapticButtonTap(e.target.checked);
+                  setLocalSettings({ ...localSettings, hapticsEnabled: e.target.checked });
+                }}
                 className="w-4 h-4 accent-amber-500"
               />
             </label>
@@ -239,7 +268,11 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
             {onOpenInstall && (
               <button
                 type="button"
-                onClick={onOpenInstall}
+                onClick={() => {
+                  playClickSound(soundEnabled);
+                  hapticButtonTap(localSettings.hapticsEnabled ?? hapticsEnabled);
+                  onOpenInstall();
+                }}
                 className="retro-btn mt-2 px-3 py-1 bg-amber-400 font-pixel text-[8px] text-stone-900"
               >
                 Install App Now 📲
@@ -261,7 +294,11 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
           <div className="flex gap-2">
             <button
               type="button"
-              onClick={onClose}
+              onClick={() => {
+                playClickSound(soundEnabled);
+                hapticButtonTap(localSettings.hapticsEnabled ?? hapticsEnabled);
+                onClose();
+              }}
               className="retro-btn flex-1 py-1.5 bg-stone-200 dark:bg-stone-700 font-pixel text-xs text-stone-800 dark:text-stone-200"
             >
               Cancel

@@ -4,6 +4,7 @@ import { TaskItem } from './TaskItem';
 import { DEFAULT_CATEGORIES } from './TaskFormModal';
 import { shouldTaskRunOnDate } from '../utils/taskRules';
 import { playClickSound } from '../utils/audio';
+import { hapticButtonTap, hapticSelection } from '../utils/haptics';
 
 interface TaskListProps {
   tasks: Task[];
@@ -18,6 +19,7 @@ interface TaskListProps {
   onReorderTasks: (newTasks: Task[]) => void;
   catName: string;
   soundEnabled: boolean;
+  hapticsEnabled?: boolean;
 }
 
 export const TaskList: React.FC<TaskListProps> = ({
@@ -33,6 +35,7 @@ export const TaskList: React.FC<TaskListProps> = ({
   onReorderTasks,
   catName,
   soundEnabled,
+  hapticsEnabled = true,
 }) => {
   const [activeTab, setActiveTab] = useState<'today' | 'upcoming' | 'completed' | 'all'>('today');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -74,9 +77,11 @@ export const TaskList: React.FC<TaskListProps> = ({
     e.preventDefault();
     if (!quickTitle.trim()) {
       playClickSound(soundEnabled);
+      hapticButtonTap(hapticsEnabled);
       onOpenCreate();
       return;
     }
+    hapticButtonTap(hapticsEnabled);
     onQuickAdd(quickTitle.trim(), quickCat);
     setQuickTitle('');
     if (activeTab === 'completed') {
@@ -88,6 +93,7 @@ export const TaskList: React.FC<TaskListProps> = ({
     const newIdx = direction === 'up' ? index - 1 : index + 1;
     if (newIdx < 0 || newIdx >= sortedTasks.length) return;
 
+    hapticButtonTap(hapticsEnabled);
     const copy = [...sortedTasks];
     const temp = copy[index];
     copy[index] = copy[newIdx];
@@ -114,7 +120,10 @@ export const TaskList: React.FC<TaskListProps> = ({
           <div className="flex items-center gap-1.5 w-full sm:w-auto justify-end">
             <select
               value={quickCat}
-              onChange={(e) => setQuickCat(e.target.value)}
+              onChange={(e) => {
+                hapticSelection(hapticsEnabled);
+                setQuickCat(e.target.value);
+              }}
               aria-label="Select category"
               className="flex-1 sm:flex-initial h-9 retro-box-sm px-2 bg-white dark:bg-stone-900 font-pixel text-[10px] text-stone-900 dark:text-white outline-none cursor-pointer"
             >
@@ -137,6 +146,7 @@ export const TaskList: React.FC<TaskListProps> = ({
               type="button"
               onClick={() => {
                 playClickSound(soundEnabled);
+                hapticButtonTap(hapticsEnabled);
                 onOpenCreate();
               }}
               className="retro-btn h-9 px-2.5 bg-emerald-500 text-white font-pixel text-[10px] whitespace-nowrap flex items-center justify-center gap-1 hover:bg-emerald-600 flex-shrink-0"
@@ -163,6 +173,7 @@ export const TaskList: React.FC<TaskListProps> = ({
                 key={tab.id}
                 onClick={() => {
                   playClickSound(soundEnabled);
+                  hapticSelection(hapticsEnabled);
                   setActiveTab(tab.id as any);
                 }}
                 className={`retro-btn px-2.5 py-1 font-pixel text-[9px] whitespace-nowrap ${
@@ -180,7 +191,11 @@ export const TaskList: React.FC<TaskListProps> = ({
         {/* Category Pill Filters */}
         <div className="flex flex-wrap items-center gap-1.5">
           <button
-            onClick={() => setSelectedCategory('all')}
+            onClick={() => {
+              playClickSound(soundEnabled);
+              hapticSelection(hapticsEnabled);
+              setSelectedCategory('all');
+            }}
             className={`retro-btn px-2 py-0.5 font-pixel text-[8px] whitespace-nowrap ${
               selectedCategory === 'all'
                 ? 'bg-stone-800 text-white dark:bg-amber-300 dark:text-stone-900'
@@ -194,7 +209,11 @@ export const TaskList: React.FC<TaskListProps> = ({
             return (
               <button
                 key={c.id}
-                onClick={() => setSelectedCategory(c.id)}
+                onClick={() => {
+                  playClickSound(soundEnabled);
+                  hapticSelection(hapticsEnabled);
+                  setSelectedCategory(c.id);
+                }}
                 className={`retro-btn px-2 py-0.5 font-pixel text-[8px] whitespace-nowrap flex items-center gap-1 ${
                   isCatSel
                     ? 'bg-amber-300 text-stone-900'
@@ -227,7 +246,11 @@ export const TaskList: React.FC<TaskListProps> = ({
           </p>
           {activeTab !== 'today' && (
             <button
-              onClick={() => setActiveTab('today')}
+              onClick={() => {
+                playClickSound(soundEnabled);
+                hapticButtonTap(hapticsEnabled);
+                setActiveTab('today');
+              }}
               className="retro-btn mt-3 px-3 py-1 bg-amber-400 font-pixel text-[9px] text-stone-900"
             >
               Back to Today&apos;s View
@@ -251,6 +274,7 @@ export const TaskList: React.FC<TaskListProps> = ({
               isFirst={index === 0}
               isLast={index === sortedTasks.length - 1}
               soundEnabled={soundEnabled}
+              hapticsEnabled={hapticsEnabled}
             />
           ))}
         </div>

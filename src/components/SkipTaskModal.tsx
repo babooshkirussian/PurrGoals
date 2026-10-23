@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Task } from '../types/index';
 import { playClickSound } from '../utils/audio';
+import { hapticButtonTap, hapticSelection } from '../utils/haptics';
 
 interface SkipTaskModalProps {
   task: Task;
@@ -8,6 +9,7 @@ interface SkipTaskModalProps {
   onConfirmSkip: (taskId: string, reason: string) => void;
   onClose: () => void;
   soundEnabled: boolean;
+  hapticsEnabled?: boolean;
 }
 
 export const SkipTaskModal: React.FC<SkipTaskModalProps> = ({
@@ -16,6 +18,7 @@ export const SkipTaskModal: React.FC<SkipTaskModalProps> = ({
   onConfirmSkip,
   onClose,
   soundEnabled,
+  hapticsEnabled = true,
 }) => {
   const [reason, setReason] = useState('Rest day / Rescheduled');
   const suggestions = [
@@ -28,6 +31,7 @@ export const SkipTaskModal: React.FC<SkipTaskModalProps> = ({
 
   const handleSkip = () => {
     playClickSound(soundEnabled);
+    hapticButtonTap(hapticsEnabled);
     onConfirmSkip(task.id, reason);
     onClose();
   };
@@ -43,7 +47,11 @@ export const SkipTaskModal: React.FC<SkipTaskModalProps> = ({
             </h3>
           </div>
           <button
-            onClick={onClose}
+            onClick={() => {
+              playClickSound(soundEnabled);
+              hapticButtonTap(hapticsEnabled);
+              onClose();
+            }}
             aria-label="Close"
             className="retro-btn px-2 py-0.5 bg-stone-300 dark:bg-stone-700 font-pixel text-[10px]"
           >
@@ -72,7 +80,11 @@ export const SkipTaskModal: React.FC<SkipTaskModalProps> = ({
               <button
                 key={s}
                 type="button"
-                onClick={() => setReason(s)}
+                onClick={() => {
+                  playClickSound(soundEnabled);
+                  hapticSelection(hapticsEnabled);
+                  setReason(s);
+                }}
                 className="retro-btn px-2 py-0.5 bg-stone-100 dark:bg-stone-800 text-[10px] text-stone-700 dark:text-stone-300"
               >
                 {s}
@@ -84,7 +96,11 @@ export const SkipTaskModal: React.FC<SkipTaskModalProps> = ({
         <div className="flex gap-2">
           <button
             type="button"
-            onClick={onClose}
+            onClick={() => {
+              playClickSound(soundEnabled);
+              hapticButtonTap(hapticsEnabled);
+              onClose();
+            }}
             className="retro-btn flex-1 py-1.5 bg-stone-200 dark:bg-stone-700 font-pixel text-[10px]"
           >
             Cancel

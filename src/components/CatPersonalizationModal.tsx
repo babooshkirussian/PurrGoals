@@ -3,6 +3,7 @@ import { CatConfig, FurColor, EyeColor, AccessoryId, RoomDecorationId } from '..
 import { ACCESSORIES_CATALOG, DECORATIONS_CATALOG, getCatColors } from '../utils/pixelCatData';
 import { PixelCatCanvas } from './PixelCatCanvas';
 import { playClickSound, playCoinSound } from '../utils/audio';
+import { hapticButtonTap, hapticSelection } from '../utils/haptics';
 
 interface CatPersonalizationModalProps {
   catConfig: CatConfig;
@@ -11,6 +12,7 @@ interface CatPersonalizationModalProps {
   onSpendCoins: (amount: number) => void;
   onClose: () => void;
   soundEnabled: boolean;
+  hapticsEnabled?: boolean;
 }
 
 export const CatPersonalizationModal: React.FC<CatPersonalizationModalProps> = ({
@@ -20,6 +22,7 @@ export const CatPersonalizationModal: React.FC<CatPersonalizationModalProps> = (
   onSpendCoins,
   onClose,
   soundEnabled,
+  hapticsEnabled = true,
 }) => {
   const [activeTab, setActiveTab] = useState<'look' | 'wardrobe' | 'decor'>('look');
   const [name, setName] = useState(catConfig.name);
@@ -67,6 +70,7 @@ export const CatPersonalizationModal: React.FC<CatPersonalizationModalProps> = (
 
   const handleSave = () => {
     playClickSound(soundEnabled);
+    hapticButtonTap(hapticsEnabled);
     onSaveConfig(previewConfig);
     onClose();
   };
@@ -78,6 +82,7 @@ export const CatPersonalizationModal: React.FC<CatPersonalizationModalProps> = (
     }
     onSpendCoins(acc.price);
     playCoinSound(soundEnabled);
+    hapticButtonTap(hapticsEnabled);
     const newUnlocked = [...unlockedAccessories, acc.id];
     setUnlockedAccessories(newUnlocked);
     setAccessory(acc.id);
@@ -90,6 +95,7 @@ export const CatPersonalizationModal: React.FC<CatPersonalizationModalProps> = (
     }
     onSpendCoins(dec.price);
     playCoinSound(soundEnabled);
+    hapticButtonTap(hapticsEnabled);
     const newUnlocked = [...unlockedDecorations, dec.id];
     setUnlockedDecorations(newUnlocked);
     setRoomDecorations([...roomDecorations, dec.id]);
@@ -97,6 +103,7 @@ export const CatPersonalizationModal: React.FC<CatPersonalizationModalProps> = (
 
   const toggleDecoration = (decId: RoomDecorationId) => {
     playClickSound(soundEnabled);
+    hapticButtonTap(hapticsEnabled);
     if (roomDecorations.includes(decId)) {
       setRoomDecorations(roomDecorations.filter((id) => id !== decId));
     } else {
@@ -121,7 +128,11 @@ export const CatPersonalizationModal: React.FC<CatPersonalizationModalProps> = (
             </div>
           </div>
           <button
-            onClick={onClose}
+            onClick={() => {
+              playClickSound(soundEnabled);
+              hapticButtonTap(hapticsEnabled);
+              onClose();
+            }}
             aria-label="Close customization modal"
             className="retro-btn px-2.5 py-1 bg-rose-500 text-white font-pixel text-xs"
           >
@@ -140,7 +151,11 @@ export const CatPersonalizationModal: React.FC<CatPersonalizationModalProps> = (
         {/* Navigation Tabs */}
         <div className="flex gap-1 mb-3">
           <button
-            onClick={() => setActiveTab('look')}
+            onClick={() => {
+              playClickSound(soundEnabled);
+              hapticSelection(hapticsEnabled);
+              setActiveTab('look');
+            }}
             className={`retro-btn flex-1 py-1.5 font-pixel text-[10px] ${
               activeTab === 'look'
                 ? 'bg-amber-400 text-stone-900'
@@ -150,7 +165,11 @@ export const CatPersonalizationModal: React.FC<CatPersonalizationModalProps> = (
             Appearance
           </button>
           <button
-            onClick={() => setActiveTab('wardrobe')}
+            onClick={() => {
+              playClickSound(soundEnabled);
+              hapticSelection(hapticsEnabled);
+              setActiveTab('wardrobe');
+            }}
             className={`retro-btn flex-1 py-1.5 font-pixel text-[10px] ${
               activeTab === 'wardrobe'
                 ? 'bg-amber-400 text-stone-900'
@@ -160,7 +179,11 @@ export const CatPersonalizationModal: React.FC<CatPersonalizationModalProps> = (
             Wardrobe
           </button>
           <button
-            onClick={() => setActiveTab('decor')}
+            onClick={() => {
+              playClickSound(soundEnabled);
+              hapticSelection(hapticsEnabled);
+              setActiveTab('decor');
+            }}
             className={`retro-btn flex-1 py-1.5 font-pixel text-[10px] ${
               activeTab === 'decor'
                 ? 'bg-amber-400 text-stone-900'
@@ -203,6 +226,7 @@ export const CatPersonalizationModal: React.FC<CatPersonalizationModalProps> = (
                         key={color.id}
                         onClick={() => {
                           playClickSound(soundEnabled);
+                          hapticSelection(hapticsEnabled);
                           setFurColor(color.id);
                         }}
                         className={`retro-btn p-2 flex items-center gap-2 text-left ${
@@ -235,6 +259,7 @@ export const CatPersonalizationModal: React.FC<CatPersonalizationModalProps> = (
                         key={eye.id}
                         onClick={() => {
                           playClickSound(soundEnabled);
+                          hapticSelection(hapticsEnabled);
                           setEyeColor(eye.id);
                         }}
                         className={`retro-btn p-2 flex items-center gap-2 text-left ${
@@ -288,6 +313,7 @@ export const CatPersonalizationModal: React.FC<CatPersonalizationModalProps> = (
                         <button
                           onClick={() => {
                             playClickSound(soundEnabled);
+                            hapticButtonTap(hapticsEnabled);
                             setAccessory(item.id);
                           }}
                           className={`retro-btn px-2.5 py-1 font-pixel text-[9px] ${
@@ -374,7 +400,11 @@ export const CatPersonalizationModal: React.FC<CatPersonalizationModalProps> = (
         {/* Footer Actions */}
         <div className="flex gap-2 pt-2 border-t-2 border-stone-800">
           <button
-            onClick={onClose}
+            onClick={() => {
+              playClickSound(soundEnabled);
+              hapticButtonTap(hapticsEnabled);
+              onClose();
+            }}
             className="retro-btn flex-1 py-2 bg-stone-200 dark:bg-stone-700 font-pixel text-xs text-stone-800 dark:text-stone-200"
           >
             Cancel

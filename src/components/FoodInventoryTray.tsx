@@ -2,6 +2,7 @@ import React from 'react';
 import { FoodType } from '../types/index';
 import { FOOD_INFO } from '../utils/pixelCatData';
 import { playClickSound } from '../utils/audio';
+import { hapticSelection, hapticFeed } from '../utils/haptics';
 
 interface FoodInventoryTrayProps {
   inventory: Record<FoodType, number>;
@@ -10,6 +11,7 @@ interface FoodInventoryTrayProps {
   onFeedDirectly: (food: FoodType) => void;
   catName: string;
   soundEnabled: boolean;
+  hapticsEnabled?: boolean;
 }
 
 export const FoodInventoryTray: React.FC<FoodInventoryTrayProps> = ({
@@ -19,6 +21,7 @@ export const FoodInventoryTray: React.FC<FoodInventoryTrayProps> = ({
   onFeedDirectly,
   catName,
   soundEnabled,
+  hapticsEnabled = true,
 }) => {
   const foodTypes: FoodType[] = ['fish', 'tuna_can', 'milk', 'biscuit', 'shrimp'];
   const totalFoodCount = Object.values(inventory).reduce((a, b) => a + b, 0);
@@ -62,6 +65,7 @@ export const FoodInventoryTray: React.FC<FoodInventoryTrayProps> = ({
                   onClick={() => {
                     if (!hasItems) return;
                     playClickSound(soundEnabled);
+                    hapticSelection(hapticsEnabled);
                     onSelectFood(type);
                   }}
                   className={`retro-btn relative p-1.5 sm:p-2 flex flex-col items-center justify-center rounded-sm transition-all ${
@@ -97,7 +101,10 @@ export const FoodInventoryTray: React.FC<FoodInventoryTrayProps> = ({
                 Selected: <span className="font-bold">{FOOD_INFO[selectedFood].name}</span>
               </div>
               <button
-                onClick={() => onFeedDirectly(selectedFood)}
+                onClick={() => {
+                  hapticFeed(hapticsEnabled);
+                  onFeedDirectly(selectedFood);
+                }}
                 className="retro-btn px-3 py-1 bg-emerald-500 text-white font-pixel text-[9px] hover:bg-emerald-600"
               >
                 Feed to {catName} 🥣

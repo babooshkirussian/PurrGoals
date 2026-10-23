@@ -129,6 +129,7 @@ export interface NotificationSettings {
   eveningCheckin: boolean;
   inAppToasts: boolean;
   soundEnabled: boolean;
+  hapticsEnabled?: boolean;
 }
 
 export interface DayHistoryRecord {

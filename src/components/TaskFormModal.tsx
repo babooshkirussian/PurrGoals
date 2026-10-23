@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Task, CategoryMeta, Priority, RepeatSchedule, Subtask } from '../types/index';
 import { playClickSound } from '../utils/audio';
+import { hapticButtonTap, hapticSelection } from '../utils/haptics';
 
 export const DEFAULT_CATEGORIES: CategoryMeta[] = [
   { id: 'health', name: 'Health', icon: '❤️', color: '#ef4444', bgColor: '#fee2e2' },
@@ -15,6 +16,7 @@ interface TaskFormModalProps {
   onSaveTask: (task: Task) => void;
   onClose: () => void;
   soundEnabled: boolean;
+  hapticsEnabled?: boolean;
 }
 
 export const TaskFormModal: React.FC<TaskFormModalProps> = ({
@@ -22,6 +24,7 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
   onSaveTask,
   onClose,
   soundEnabled,
+  hapticsEnabled = true,
 }) => {
   const isEditing = !!initialTask;
 
@@ -69,6 +72,8 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
 
   const handleAddSubtask = () => {
     if (!newSubtaskTitle.trim()) return;
+    playClickSound(soundEnabled);
+    hapticButtonTap(hapticsEnabled);
     const newSub: Subtask = {
       id: 'sub-' + Date.now() + Math.random().toString(36).substring(2, 6),
       title: newSubtaskTitle.trim(),
@@ -79,10 +84,14 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
   };
 
   const handleRemoveSubtask = (id: string) => {
+    playClickSound(soundEnabled);
+    hapticButtonTap(hapticsEnabled);
     setSubtasks(subtasks.filter((s) => s.id !== id));
   };
 
   const toggleMinutesBefore = (mins: number) => {
+    playClickSound(soundEnabled);
+    hapticSelection(hapticsEnabled);
     if (minutesBefore.includes(mins)) {
       setMinutesBefore(minutesBefore.filter((m) => m !== mins));
     } else {
@@ -91,6 +100,8 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
   };
 
   const toggleDayOfWeek = (day: number) => {
+    playClickSound(soundEnabled);
+    hapticSelection(hapticsEnabled);
     if (repeatCustomDays.includes(day)) {
       setRepeatCustomDays(repeatCustomDays.filter((d) => d !== day));
     } else {
@@ -134,6 +145,7 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
     };
 
     playClickSound(soundEnabled);
+    hapticButtonTap(hapticsEnabled);
     onSaveTask(taskToSave);
     onClose();
   };
@@ -152,7 +164,11 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
             </h2>
           </div>
           <button
-            onClick={onClose}
+            onClick={() => {
+              playClickSound(soundEnabled);
+              hapticButtonTap(hapticsEnabled);
+              onClose();
+            }}
             aria-label="Close modal"
             className="retro-btn px-2.5 py-1 bg-rose-500 text-white font-pixel text-xs"
           >
@@ -483,7 +499,11 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
         <div className="flex gap-2 pt-3 border-t-2 border-stone-800">
           <button
             type="button"
-            onClick={onClose}
+            onClick={() => {
+              playClickSound(soundEnabled);
+              hapticButtonTap(hapticsEnabled);
+              onClose();
+            }}
             className="retro-btn flex-1 py-2 bg-stone-200 dark:bg-stone-700 font-pixel text-xs text-stone-800 dark:text-stone-200"
           >
             Cancel
