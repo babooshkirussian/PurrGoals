@@ -99,3 +99,17 @@
   background: #f59e0b;
   border: 2px solid #09090b;
 }
+
+/* Mobile phone status bar / notch / safe-area insets */
+.safe-header {
+  padding-top: max(env(safe-area-inset-top, 0px), 0.75rem);
+}
+
+.safe-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), 4rem);
+}
+
+.safe-modal {
+  padding-top: max(env(safe-area-inset-top, 0px), 1rem);
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), 1rem);
+}

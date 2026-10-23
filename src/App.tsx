@@ -574,13 +574,13 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fef9f2] dark:bg-[#12111a] text-stone-900 dark:text-stone-100 pb-16 transition-colors duration-200">
+    <div className="min-h-screen bg-[#fef9f2] dark:bg-[#12111a] text-stone-900 dark:text-stone-100 safe-bottom transition-colors duration-200">
       {/* Offline Status Banner */}
       <OfflineIndicator />
 
       {/* Retro In-App Toast Banner */}
       {toastMessage && (
-        <div className="fixed top-4 left-4 right-4 sm:left-auto sm:right-4 z-50 retro-box bg-amber-300 dark:bg-stone-800 text-stone-900 dark:text-amber-100 p-3 max-w-md flex items-center justify-between gap-3 shadow-xl animate-bounce">
+        <div className="fixed top-14 left-3 right-3 sm:left-auto sm:right-4 z-50 retro-box bg-amber-300 dark:bg-stone-800 text-stone-900 dark:text-amber-100 p-3 max-w-md flex items-center justify-between gap-3 shadow-xl animate-bounce">
           <div className="font-pixel text-[10px] sm:text-xs">{toastMessage}</div>
           {lastCompletedTask && (
             <button
@@ -593,22 +593,22 @@ export default function App() {
         </div>
       )}
 
-      {/* Top Retro Header Bar */}
-      <header className="sticky top-0 z-40 bg-[#faeed8] dark:bg-[#181524] border-b-4 border-stone-800 dark:border-stone-900 px-3 sm:px-6 py-2.5 flex items-center justify-between shadow-md">
-        <div className="flex items-center gap-2">
-          <span className="text-2xl drop-shadow-sm">🐾</span>
-          <div>
-            <h1 className="font-pixel text-sm sm:text-base text-stone-900 dark:text-amber-200 tracking-wide">
+      {/* Top Retro Header Bar (with phone safe-area clearance) */}
+      <header className="sticky top-0 z-40 safe-header bg-[#faeed8] dark:bg-[#181524] border-b-4 border-stone-800 dark:border-stone-900 px-3 sm:px-6 pb-2.5 flex items-center justify-between gap-2 shadow-md">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="text-xl sm:text-2xl drop-shadow-sm flex-shrink-0">🐾</span>
+          <div className="min-w-0">
+            <h1 className="font-pixel text-xs sm:text-base text-stone-900 dark:text-amber-200 tracking-wide truncate">
               PurrGoals
             </h1>
-            <div className="text-[10px] text-stone-600 dark:text-stone-400 font-pixel">
+            <div className="text-[9px] sm:text-[10px] text-stone-600 dark:text-stone-400 font-pixel truncate">
               with {catConfig.name}
             </div>
           </div>
         </div>
 
         {/* Action Controls */}
-        <div className="flex items-center gap-1.5 sm:gap-2">
+        <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
           {/* Sound Toggle */}
           <button
             onClick={() => {

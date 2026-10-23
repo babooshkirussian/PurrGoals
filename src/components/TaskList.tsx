@@ -72,9 +72,16 @@ export const TaskList: React.FC<TaskListProps> = ({
 
   const handleQuickAddSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!quickTitle.trim()) return;
+    if (!quickTitle.trim()) {
+      playClickSound(soundEnabled);
+      onOpenCreate();
+      return;
+    }
     onQuickAdd(quickTitle.trim(), quickCat);
     setQuickTitle('');
+    if (activeTab === 'completed') {
+      setActiveTab('today');
+    }
   };
 
   const handleMove = (index: number, direction: 'up' | 'down') => {
@@ -95,52 +102,55 @@ export const TaskList: React.FC<TaskListProps> = ({
     <div className="space-y-3">
       {/* Quick Add Bar */}
       <form onSubmit={handleQuickAddSubmit} className="retro-box bg-[#fffbeb] dark:bg-[#1c1917] p-2.5">
-        <div className="flex gap-1.5 items-center">
+        <div className="flex flex-wrap sm:flex-nowrap gap-2 items-center">
           <input
             type="text"
             value={quickTitle}
             onChange={(e) => setQuickTitle(e.target.value)}
-            placeholder="Quick add: e.g. Drink glass of water..."
-            className="flex-1 retro-box-sm px-3 py-1.5 bg-white dark:bg-stone-900 font-pixel text-xs text-stone-900 dark:text-white outline-none focus:ring-2 focus:ring-amber-500"
+            placeholder="Quick add goal: e.g. Drink water..."
+            className="flex-1 min-w-[160px] h-9 retro-box-sm px-3 bg-white dark:bg-stone-900 font-pixel text-[10px] sm:text-xs text-stone-900 dark:text-white outline-none focus:ring-2 focus:ring-amber-500"
           />
 
-          <select
-            value={quickCat}
-            onChange={(e) => setQuickCat(e.target.value)}
-            aria-label="Select category"
-            className="retro-box-sm px-2 py-1.5 bg-white dark:bg-stone-900 font-pixel text-[10px] text-stone-900 dark:text-white outline-none"
-          >
-            {DEFAULT_CATEGORIES.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.icon} {c.name}
-              </option>
-            ))}
-          </select>
+          <div className="flex items-center gap-1.5 w-full sm:w-auto justify-end">
+            <select
+              value={quickCat}
+              onChange={(e) => setQuickCat(e.target.value)}
+              aria-label="Select category"
+              className="flex-1 sm:flex-initial h-9 retro-box-sm px-2 bg-white dark:bg-stone-900 font-pixel text-[10px] text-stone-900 dark:text-white outline-none cursor-pointer"
+            >
+              {DEFAULT_CATEGORIES.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.icon} {c.name}
+                </option>
+              ))}
+            </select>
 
-          <button
-            type="submit"
-            className="retro-btn px-3 py-1.5 bg-amber-400 dark:bg-amber-500 text-stone-900 font-pixel text-xs hover:bg-amber-300"
-          >
-            + Add
-          </button>
+            <button
+              type="submit"
+              className="retro-btn h-9 px-3 bg-amber-400 dark:bg-amber-500 text-stone-900 font-pixel text-[10px] whitespace-nowrap flex items-center justify-center gap-1 hover:bg-amber-300 flex-shrink-0"
+              title="Quickly add goal (or open form if empty)"
+            >
+              <span>+ Add</span>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => {
-              playClickSound(soundEnabled);
-              onOpenCreate();
-            }}
-            className="retro-btn px-2.5 py-1.5 bg-emerald-500 text-white font-pixel text-xs hover:bg-emerald-600"
-            title="Custom Goal with reminder/timer"
-          >
-            Full
-          </button>
+            <button
+              type="button"
+              onClick={() => {
+                playClickSound(soundEnabled);
+                onOpenCreate();
+              }}
+              className="retro-btn h-9 px-2.5 bg-emerald-500 text-white font-pixel text-[10px] whitespace-nowrap flex items-center justify-center gap-1 hover:bg-emerald-600 flex-shrink-0"
+              title="Open detailed goal creator with deadline, reminders & timer"
+            >
+              <span>⚙️ Custom</span>
+            </button>
+          </div>
         </div>
       </form>
 
-      {/* Tabs Row */}
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex gap-1">
+      {/* Tabs & Category Filters */}
+      <div className="space-y-2">
+        <div className="flex flex-wrap gap-1.5">
           {[
             { id: 'today', label: 'Today' },
             { id: 'all', label: 'All Goals' },
@@ -155,7 +165,7 @@ export const TaskList: React.FC<TaskListProps> = ({
                   playClickSound(soundEnabled);
                   setActiveTab(tab.id as any);
                 }}
-                className={`retro-btn px-2.5 py-1 font-pixel text-[9px] ${
+                className={`retro-btn px-2.5 py-1 font-pixel text-[9px] whitespace-nowrap ${
                   isSel
                     ? 'bg-amber-400 text-stone-900'
                     : 'bg-white dark:bg-stone-800 text-stone-600 dark:text-stone-300'
@@ -168,16 +178,16 @@ export const TaskList: React.FC<TaskListProps> = ({
         </div>
 
         {/* Category Pill Filters */}
-        <div className="flex items-center gap-1 overflow-x-auto pb-1 max-w-full">
+        <div className="flex flex-wrap items-center gap-1.5">
           <button
             onClick={() => setSelectedCategory('all')}
-            className={`retro-btn px-2 py-0.5 font-pixel text-[8px] ${
+            className={`retro-btn px-2 py-0.5 font-pixel text-[8px] whitespace-nowrap ${
               selectedCategory === 'all'
                 ? 'bg-stone-800 text-white dark:bg-amber-300 dark:text-stone-900'
                 : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300'
             }`}
           >
-            All Cats
+            All Categories
           </button>
           {DEFAULT_CATEGORIES.map((c) => {
             const isCatSel = selectedCategory === c.id;
@@ -185,7 +195,7 @@ export const TaskList: React.FC<TaskListProps> = ({
               <button
                 key={c.id}
                 onClick={() => setSelectedCategory(c.id)}
-                className={`retro-btn px-2 py-0.5 font-pixel text-[8px] flex items-center gap-1 ${
+                className={`retro-btn px-2 py-0.5 font-pixel text-[8px] whitespace-nowrap flex items-center gap-1 ${
                   isCatSel
                     ? 'bg-amber-300 text-stone-900'
                     : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300'

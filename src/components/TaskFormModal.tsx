@@ -141,8 +141,8 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
   const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 overflow-y-auto">
-      <div className="retro-box w-full max-w-lg bg-[#fffbeb] dark:bg-[#1c1917] p-5 max-h-[92vh] flex flex-col justify-between text-stone-900 dark:text-stone-100">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-3 safe-modal overflow-y-auto">
+      <div className="retro-box w-full max-w-lg bg-[#fffbeb] dark:bg-[#1c1917] p-4 sm:p-5 max-h-[86dvh] flex flex-col justify-between text-stone-900 dark:text-stone-100">
         {/* Header */}
         <div className="flex items-center justify-between border-b-2 border-stone-800 pb-3 mb-3">
           <div className="flex items-center gap-2">
