@@ -3,6 +3,7 @@ import { CatAnimationState, CatConfig, FoodType } from '../types/index';
 import { CAT_QUOTES, FOOD_INFO } from '../utils/pixelCatData';
 import { playCatMeow, playCatPurr, playClickSound } from '../utils/audio';
 import { drawRoom320 } from '../utils/pixelCat320';
+import { getCatGifForState, IdleVariant } from '../utils/catGifs';
 import { hapticPet, hapticFeed, hapticButtonTap, hapticSelection } from '../utils/haptics';
 
 interface PixelRoomProps {
@@ -34,6 +35,11 @@ export const PixelRoom: React.FC<PixelRoomProps> = ({
   const [speechTimer, setSpeechTimer] = useState<NodeJS.Timeout | null>(null);
   const [isNight, setIsNight] = useState<boolean>(false);
   const [bowlHasFood, setBowlHasFood] = useState<boolean>(false);
+  const [isPetting, setIsPetting] = useState<boolean>(false);
+  const [idleVariant, setIdleVariant] = useState<IdleVariant>('default');
+  const [gifLoadError, setGifLoadError] = useState<boolean>(false);
+  const petTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const idleCycleCountRef = useRef<number>(0);
 
   // Check day/night on load
   useEffect(() => {
@@ -48,6 +54,28 @@ export const PixelRoom: React.FC<PixelRoomProps> = ({
     }, 260);
     return () => clearInterval(timer);
   }, []);
+
+  // Periodically cycle idle.gif with alternate idle.gif and licking.gif when idle
+  useEffect(() => {
+    if (animationState !== 'idle') {
+      setIdleVariant('default');
+      return;
+    }
+    const interval = setInterval(() => {
+      idleCycleCountRef.current += 1;
+      const nextVariant: IdleVariant =
+        idleCycleCountRef.current % 2 === 1 ? 'alternate' : 'licking';
+      setIdleVariant(nextVariant);
+      setTimeout(() => setIdleVariant('default'), 3200);
+    }, 11000);
+    return () => clearInterval(interval);
+  }, [animationState]);
+
+  const activeGifSrc = getCatGifForState({
+    animationState,
+    isPetting,
+    idleVariant,
+  });
 
   // Update speech bubble based on animation state changes
   useEffect(() => {
@@ -74,6 +102,13 @@ export const PixelRoom: React.FC<PixelRoomProps> = ({
   const handlePet = () => {
     const randomQuote = CAT_QUOTES[Math.floor(Math.random() * CAT_QUOTES.length)];
     triggerSpeech(randomQuote, 4000);
+
+    // Trigger Petting cat.gif animation for one full cycle (~2.8s)
+    if (petTimerRef.current) clearTimeout(petTimerRef.current);
+    setIsPetting(true);
+    petTimerRef.current = setTimeout(() => {
+      setIsPetting(false);
+    }, 2800);
 
     // Light tap haptic pulse for petting
     hapticPet(hapticsEnabled);
@@ -115,6 +150,7 @@ export const PixelRoom: React.FC<PixelRoomProps> = ({
       bowlHasFood,
       isNight,
       speechText,
+      hideCanvasCat: !gifLoadError,
     });
   }, [
     catConfig,
@@ -124,6 +160,7 @@ export const PixelRoom: React.FC<PixelRoomProps> = ({
     bowlHasFood,
     isNight,
     speechText,
+    gifLoadError,
   ]);
 
   // Canvas Click Handler (Interactive coordinates on 320x180)
@@ -174,6 +211,17 @@ export const PixelRoom: React.FC<PixelRoomProps> = ({
           className="pixelated w-full h-full block cursor-pointer select-none"
           style={{ imageRendering: 'pixelated' }}
         />
+
+        {/* Animated Pixel Cat GIF Overlay positioned on the cozy rug */}
+        {!gifLoadError && (
+          <img
+            src={activeGifSrc}
+            alt={`${catConfig.name} (${isPetting ? 'petting' : animationState})`}
+            onError={() => setGifLoadError(true)}
+            className="pixelated absolute left-1/2 -translate-x-1/2 bottom-[9%] h-[54%] w-auto pointer-events-none select-none object-contain"
+            style={{ imageRendering: 'pixelated' }}
+          />
+        )}
 
         {/* Feeding hint overlay */}
         {selectedFoodForFeeding && (

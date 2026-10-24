@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { CatAnimationState, CatConfig, FoodType } from '../types/index';
 import { drawRoom320 } from '../utils/pixelCat320';
+import { getCatGifForState } from '../utils/catGifs';
 
 interface PixelCatCanvasProps {
   catConfig: CatConfig;
@@ -17,6 +18,9 @@ export const PixelCatCanvas: React.FC<PixelCatCanvasProps> = ({
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [frameIndex, setFrameIndex] = useState(0);
+  const [isPetting, setIsPetting] = useState(false);
+  const [gifLoadError, setGifLoadError] = useState(false);
+  const petTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Smooth animation ticker
   useEffect(() => {
@@ -39,12 +43,25 @@ export const PixelCatCanvas: React.FC<PixelCatCanvasProps> = ({
       selectedFood: activeFeedingItem,
       bowlHasFood: false,
       isNight: false,
+      hideCanvasCat: !gifLoadError,
     });
-  }, [catConfig, animationState, frameIndex, activeFeedingItem]);
+  }, [catConfig, animationState, frameIndex, activeFeedingItem, gifLoadError]);
+
+  const activeGifSrc = getCatGifForState({
+    animationState,
+    isPetting,
+  });
+
+  const handleClick = () => {
+    if (petTimerRef.current) clearTimeout(petTimerRef.current);
+    setIsPetting(true);
+    petTimerRef.current = setTimeout(() => setIsPetting(false), 2800);
+    onPetCat?.();
+  };
 
   return (
     <div
-      onClick={onPetCat}
+      onClick={handleClick}
       role="button"
       tabIndex={0}
       aria-label={`Pet ${catConfig.name}`}
@@ -57,6 +74,15 @@ export const PixelCatCanvas: React.FC<PixelCatCanvasProps> = ({
         className="pixelated w-full h-full block"
         style={{ imageRendering: 'pixelated' }}
       />
+      {!gifLoadError && (
+        <img
+          src={activeGifSrc}
+          alt={`${catConfig.name} (${isPetting ? 'petting' : animationState})`}
+          onError={() => setGifLoadError(true)}
+          className="pixelated absolute left-1/2 -translate-x-1/2 bottom-[9%] h-[54%] w-auto pointer-events-none select-none object-contain"
+          style={{ imageRendering: 'pixelated' }}
+        />
+      )}
     </div>
   );
 };

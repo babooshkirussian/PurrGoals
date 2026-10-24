@@ -10,6 +10,7 @@ export interface RoomRenderOptions {
   isNight: boolean;
   speechText?: string;
   bounceOffset?: number;
+  hideCanvasCat?: boolean;
 }
 
 /**
@@ -167,6 +168,7 @@ export function drawRoom320(
     bowlHasFood,
     isNight,
     speechText,
+    hideCanvasCat = false,
   } = options;
 
   ctx.imageSmoothingEnabled = false;
@@ -413,13 +415,16 @@ export function drawRoom320(
   }
   catY += bounce;
 
-  if (animationState === 'happy') {
-    drawFloatingHearts(ctx, catX + 29, catY + 10, frameIndex);
-  } else if (animationState === 'celebrating') {
+  if (animationState === 'celebrating') {
     drawConfetti(ctx, catX + 29, catY, frameIndex);
   }
 
-  drawCatHighRes(ctx, catX, catY, catConfig, animationState, frameIndex, 1);
+  if (!hideCanvasCat) {
+    if (animationState === 'happy') {
+      drawFloatingHearts(ctx, catX + 29, catY + 10, frameIndex);
+    }
+    drawCatHighRes(ctx, catX, catY, catConfig, animationState, frameIndex, 1);
+  }
 
   // 8. Speech Bubble (above cat)
   if (speechText) {
