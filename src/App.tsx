@@ -574,7 +574,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fef9f2] dark:bg-[#12111a] text-stone-900 dark:text-stone-100 safe-bottom transition-colors duration-200">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#fef9f2] dark:bg-[#12111a] text-stone-900 dark:text-stone-100 safe-bottom transition-colors duration-200">
       {/* Offline Status Banner */}
       <OfflineIndicator />
 
@@ -594,8 +594,8 @@ export default function App() {
       )}
 
       {/* Top Retro Header Bar (with phone safe-area clearance) */}
-      <header className="sticky top-0 z-40 safe-header bg-[#faeed8] dark:bg-[#181524] border-b-4 border-stone-800 dark:border-stone-900 px-3 sm:px-6 pb-2.5 flex items-center justify-between gap-2 shadow-md">
-        <div className="flex items-center gap-2 min-w-0">
+      <header className="sticky top-0 z-40 safe-header bg-[#faeed8] dark:bg-[#181524] border-b-4 border-stone-800 dark:border-stone-900 px-2.5 sm:px-6 pb-2 sm:pb-2.5 flex items-center justify-between gap-1.5 sm:gap-2 shadow-md w-full max-w-full overflow-x-hidden">
+        <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
           <span className="text-xl sm:text-2xl drop-shadow-sm flex-shrink-0">🐾</span>
           <div className="min-w-0">
             <h1 className="font-pixel text-xs sm:text-base text-stone-900 dark:text-amber-200 tracking-wide truncate">
@@ -616,7 +616,7 @@ export default function App() {
               setSettings({ ...settings, soundEnabled: !settings.soundEnabled });
             }}
             aria-label={settings.soundEnabled ? 'Mute sound' : 'Enable sound'}
-            className="retro-btn px-2 py-1 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-200 font-pixel text-[10px]"
+            className="retro-btn px-1.5 sm:px-2 py-1 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-200 font-pixel text-[10px]"
             title="Toggle Sound"
           >
             {settings.soundEnabled ? '🔊' : '🔇'}
@@ -626,7 +626,7 @@ export default function App() {
           <button
             onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
             aria-label="Toggle dark mode"
-            className="retro-btn px-2 py-1 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-200 font-pixel text-[10px]"
+            className="retro-btn px-1.5 sm:px-2 py-1 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-200 font-pixel text-[10px]"
             title="Toggle Dark Mode"
           >
             {theme === 'light' ? '🌙' : '☀️'}
@@ -639,7 +639,7 @@ export default function App() {
               setIsNotificationsOpen(true);
             }}
             aria-label="Notification settings"
-            className="retro-btn px-2 py-1 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-200 font-pixel text-[10px] relative"
+            className="retro-btn px-1.5 sm:px-2 py-1 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-200 font-pixel text-[10px] relative"
             title="Notifications & Quiet Hours"
           >
             <span>🔔</span>
@@ -655,7 +655,7 @@ export default function App() {
               setIsCustomizeOpen(true);
             }}
             aria-label="Customize cat"
-            className="retro-btn px-2.5 py-1 bg-amber-400 hover:bg-amber-300 text-stone-900 font-pixel text-[9px] flex items-center gap-1"
+            className="retro-btn px-2 sm:px-2.5 py-1 bg-amber-400 hover:bg-amber-300 text-stone-900 font-pixel text-[9px] flex items-center gap-1"
           >
             <span>🐱</span>
             <span className="hidden sm:inline">Customize</span>
@@ -667,7 +667,7 @@ export default function App() {
       </header>
 
       {/* Main Content Area */}
-      <main className="max-w-xl mx-auto px-3 sm:px-4 pt-4 space-y-4">
+      <main className="w-full max-w-xl mx-auto px-2.5 sm:px-4 pt-3 sm:pt-4 space-y-3 sm:space-y-4 overflow-x-hidden">
         {/* Pixel Cat Room */}
         <PixelRoom
           catConfig={catConfig}
@@ -677,6 +677,7 @@ export default function App() {
           soundEnabled={settings.soundEnabled}
           selectedFoodForFeeding={selectedFoodForFeeding}
           onClearSelectedFood={() => setSelectedFoodForFeeding(null)}
+          onOpenCustomize={() => setIsCustomizeOpen(true)}
         />
 
         {/* 5-Heart Happiness & Streak Bar */}
