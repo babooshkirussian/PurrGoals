@@ -106,20 +106,6 @@ export const TaskList: React.FC<TaskListProps> = ({
 
   return (
     <div className="space-y-3 w-full max-w-full min-w-0">
-      {/* Primary Add Goal Button */}
-      <button
-        type="button"
-        onClick={() => {
-          playClickSound(soundEnabled);
-          hapticButtonTap(hapticsEnabled);
-          onOpenCreate();
-        }}
-        className="retro-btn w-full py-2.5 px-3 bg-emerald-500 hover:bg-emerald-400 text-white font-pixel text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
-      >
-        <span>➕</span>
-        <span>Add New Goal</span>
-      </button>
-
       {/* Quick Add Bar */}
       <form onSubmit={handleQuickAddSubmit} className="retro-box bg-[#fffbeb] dark:bg-[#1c1917] p-2 w-full max-w-full">
         <div className="flex gap-1.5 items-center w-full min-w-0">

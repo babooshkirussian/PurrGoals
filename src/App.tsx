@@ -41,6 +41,7 @@ import {
   playTimerDing,
 } from './utils/audio';
 import { FOOD_INFO } from './utils/pixelCatData';
+import { hapticButtonTap } from './utils/haptics';
 
 // Initial Seed Data
 const DEFAULT_CAT_CONFIG: CatConfig = {
@@ -595,9 +596,23 @@ export default function App() {
 
       {/* Top Retro Header Bar (with phone safe-area clearance) */}
       <header className="sticky top-0 z-40 safe-header bg-[#faeed8] dark:bg-[#181524] border-b-4 border-stone-800 dark:border-stone-900 px-2.5 sm:px-6 pb-2 sm:pb-2.5 flex items-center justify-between gap-1.5 sm:gap-2 shadow-md w-full max-w-full overflow-x-hidden">
-        <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
-          <span className="text-xl sm:text-2xl drop-shadow-sm flex-shrink-0">🐾</span>
-          <div className="min-w-0">
+        <div className="flex items-center gap-2 min-w-0">
+          <button
+            type="button"
+            onClick={() => {
+              playClickSound(settings.soundEnabled);
+              hapticButtonTap(true);
+              setEditingTask(null);
+              setIsTaskFormOpen(true);
+            }}
+            aria-label="Add new goal"
+            title="Add New Goal"
+            className="retro-btn px-2.5 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-white font-pixel text-[9px] sm:text-xs flex items-center gap-1 flex-shrink-0 shadow-sm"
+          >
+            <span>➕</span>
+            <span>New Goal</span>
+          </button>
+          <div className="min-w-0 hidden sm:block">
             <h1 className="font-pixel text-xs sm:text-base text-stone-900 dark:text-amber-200 tracking-wide truncate">
               PurrGoals
             </h1>
