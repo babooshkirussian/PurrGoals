@@ -40,12 +40,9 @@ export const CatPersonalizationModal: React.FC<CatPersonalizationModalProps> = (
   );
 
   const furColors: { id: FurColor; name: string; preview: string }[] = [
-    { id: 'orange', name: 'Ginger Tabby', preview: '#ea580c' },
-    { id: 'black', name: 'Tuxedo Black', preview: '#27272a' },
+    { id: 'orange', name: 'Ginger Tabby', preview: '#f49c38' },
     { id: 'white', name: 'Snow White', preview: '#f8fafc' },
-    { id: 'grey', name: 'Smokey Grey', preview: '#64748b' },
-    { id: 'calico', name: 'Calico Patch', preview: '#f97316' },
-    { id: 'siamese', name: 'Siamese Point', preview: '#451a03' },
+    { id: 'black', name: 'Midnight Black', preview: '#27272a' },
   ];
 
   const eyeColors: { id: EyeColor; name: string; preview: string }[] = [

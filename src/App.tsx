@@ -46,7 +46,7 @@ import { hapticButtonTap } from './utils/haptics';
 // Initial Seed Data
 const DEFAULT_CAT_CONFIG: CatConfig = {
   name: 'Mochi',
-  furColor: 'black',
+  furColor: 'orange',
   eyeColor: 'white',
   accessory: 'none',
   unlockedAccessories: ['none'],

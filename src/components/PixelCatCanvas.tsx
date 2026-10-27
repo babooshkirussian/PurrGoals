@@ -49,6 +49,7 @@ export const PixelCatCanvas: React.FC<PixelCatCanvasProps> = ({
 
   const activeGifSrc = getCatGifForState({
     animationState,
+    furColor: catConfig.furColor,
     isPetting,
   });
 

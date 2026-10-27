@@ -1,52 +1,73 @@
-import { CatAnimationState } from '../types/index';
+import { CatAnimationState, FurColor } from '../types/index';
+
+export const CAT_GIF_FILES = {
+  idle: 'idle.gif',
+  alternateIdle: 'alternate%20idle.gif',
+  petting: 'Petting%20cat.gif',
+  sleeping: 'sleeping.gif',
+  crying: 'crying.gif',
+  licking: 'licking.gif',
+} as const;
 
 export const CAT_GIF_PATHS = {
-  idle: '/assets/cats/idle.gif',
-  alternateIdle: '/assets/cats/alternate%20idle.gif',
-  petting: '/assets/cats/Petting%20cat.gif',
-  sleeping: '/assets/cats/sleeping.gif',
-  crying: '/assets/cats/crying.gif',
-  licking: '/assets/cats/licking.gif',
+  idle: `/assets/cats/${CAT_GIF_FILES.idle}`,
+  alternateIdle: `/assets/cats/${CAT_GIF_FILES.alternateIdle}`,
+  petting: `/assets/cats/${CAT_GIF_FILES.petting}`,
+  sleeping: `/assets/cats/${CAT_GIF_FILES.sleeping}`,
+  crying: `/assets/cats/${CAT_GIF_FILES.crying}`,
+  licking: `/assets/cats/${CAT_GIF_FILES.licking}`,
 } as const;
 
 export type IdleVariant = 'default' | 'alternate' | 'licking';
 
 export interface CatGifSelectionOptions {
   animationState: CatAnimationState;
+  furColor?: FurColor;
   isPetting?: boolean;
   useAlternateIdle?: boolean;
   idleVariant?: IdleVariant;
 }
 
+function getCoatPrefix(furColor?: FurColor): string {
+  if (furColor === 'white') return '/assets/cats/white';
+  if (furColor === 'black') return '/assets/cats/black';
+  return '/assets/cats';
+}
+
 /**
- * Resolves the appropriate animated cat GIF path for the current state.
+ * Resolves the appropriate animated cat GIF path for the current state and coat model (orange, white, black).
  */
 export function getCatGifForState({
   animationState,
+  furColor,
   isPetting = false,
   useAlternateIdle = false,
   idleVariant,
 }: CatGifSelectionOptions): string {
+  const prefix = getCoatPrefix(furColor);
+
   if (isPetting) {
-    return CAT_GIF_PATHS.petting;
+    return `${prefix}/${CAT_GIF_FILES.petting}`;
   }
 
   switch (animationState) {
     case 'happy':
-      return CAT_GIF_PATHS.petting;
+      return `${prefix}/${CAT_GIF_FILES.petting}`;
     case 'sleepy':
-      return CAT_GIF_PATHS.sleeping;
+      return `${prefix}/${CAT_GIF_FILES.sleeping}`;
     case 'hungry':
-      return CAT_GIF_PATHS.crying;
+      return `${prefix}/${CAT_GIF_FILES.crying}`;
     case 'eating':
-      return CAT_GIF_PATHS.licking;
+      return `${prefix}/${CAT_GIF_FILES.licking}`;
     case 'celebrating':
-      return CAT_GIF_PATHS.alternateIdle;
+      return `${prefix}/${CAT_GIF_FILES.alternateIdle}`;
     case 'idle':
     default: {
-      if (idleVariant === 'licking') return CAT_GIF_PATHS.licking;
-      if (idleVariant === 'alternate' || useAlternateIdle) return CAT_GIF_PATHS.alternateIdle;
-      return CAT_GIF_PATHS.idle;
+      if (idleVariant === 'licking') return `${prefix}/${CAT_GIF_FILES.licking}`;
+      if (idleVariant === 'alternate' || useAlternateIdle) {
+        return `${prefix}/${CAT_GIF_FILES.alternateIdle}`;
+      }
+      return `${prefix}/${CAT_GIF_FILES.idle}`;
     }
   }
 }

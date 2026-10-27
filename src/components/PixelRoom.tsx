@@ -73,6 +73,7 @@ export const PixelRoom: React.FC<PixelRoomProps> = ({
 
   const activeGifSrc = getCatGifForState({
     animationState,
+    furColor: catConfig.furColor,
     isPetting,
     idleVariant,
   });
